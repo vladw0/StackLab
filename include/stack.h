@@ -179,7 +179,7 @@ inline void TStack<T>::Resize(int len_) {
             newdata[i] = data[i]; 
         }
     }
-    if (data != 0){ 
+    if (data != nullptr){ 
         delete [] data; 
     }
     data = newdata;
@@ -205,7 +205,7 @@ inline void TStack<T>::SetData(T** data_, int len_) {
     isNew = false; 
     top = 0;
     for (int i = 0; i < len; ++i) {
-        if (data[i] == 0) { top = i; break; }
+        if (data[i] == nullptr) { top = i; break; }
         top = i + 1;
     }
 }
@@ -217,3 +217,27 @@ inline void TStack<T>::Push(T* value){
     }
     data[top++] = value;
 }
+
+template <class T>
+inline void TStack<T>::Push(const T& value) {
+    if (top >= len) { 
+        throw -1; 
+    }
+    data[top++] = new T(value);
+}
+
+template <class T>
+inline T TStack<T>::Pop() {
+    if (top == 0) { 
+        throw -1; 
+    }
+    top--;
+    if (data[top] == nullptr) { 
+        throw -1; 
+    }
+    T val = *(data[top]);
+    delete data[top]; 
+    data[top] = nullptr;
+    return val;
+}
+
