@@ -3,34 +3,39 @@
 #include <iostream>
 
 template <class T>
-class TStack
-{
+class TStack{
 protected:
 	T** data;
 	int len;
+    int top;
 	bool isNew;
 public:
 	TStack();
 	TStack(int len_);
 	TStack(const TStack& obj);
+    TStack(TStack&& obj);
+    TStack(T** datsa_, int len_);
 	~TStack();
 
-	int GetLen();
-	void GetVector(T** vector_);
+	int GetLen() const;
+    int GetTop() const;
 
 	void Resize(int len_);
-	void SetVector(T* vector_, int len);
+	void SetData(T** data_, int len);
 
 	void Push(T* value);
-    void Push(T value);
+    void Push(const T& value);
 
-    TPop();
+    T Pop(); //поп от класса Т
+
+    bool IsEmpty() const;
+    bool IsFull() const;
 
 
-	TStack& operator=(const Tstack<T>& obj);
-	TStack& operator=(TStack<T>&& obj);
-	bool operator ==(const TStack<T>& obj);
-	bool operator!=(const TStack<T>& obj);
+	TStack& operator=(const Tstack& obj);
+	TStack& operator=(TStack&& obj);
+	bool operator ==(const TStack& obj);
+	bool operator!=(const TStack& obj);
 
 
 	template <class o>
@@ -45,6 +50,7 @@ template<class T>
 inline TStack <T>::TStack(){
     data = nullptr;
     len = 0;
+    top = 0;
     isNew = true;
 }
 
@@ -94,11 +100,24 @@ inline TStack<T>::TStack(T** data_, int len_) : TStack<t>::TStack(){
         len = len_;
         data = data_;
         isNew = false;
+        for (int i = 0; i < len; i++){
+            if (data[i] == nullptr){
+                top = i;
+                break;
+            }
+        }
     }
 }
 
-template<class T>::TStack(){
-
+template<class T>
+inline TStack<T>::~TStack(){
+    if (isNew){
+        if (data != nullptr){
+            for (int i = 0; i < len; i++){
+                delete data[i];
+            }
+        }
+    }
 } 
 
 template<class T>
