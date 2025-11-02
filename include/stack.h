@@ -26,7 +26,7 @@ public:
 	void Push(T* value);
     void Push(const T& value);
 
-    T Pop(); //поп от класса Т
+    T Pop();
 
     bool IsEmpty() const;
     bool IsFull() const;
@@ -241,3 +241,12 @@ inline T TStack<T>::Pop() {
     return val;
 }
 
+template <class T>
+inline bool TStack<T>::IsEmpty() const { 
+    return top == 0; 
+}
+
+template <class T>
+inline bool TStack<T>::IsFull() const {
+    return top >= len; 
+}
