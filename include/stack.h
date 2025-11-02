@@ -14,7 +14,7 @@ public:
 	TStack(int len_);
 	TStack(const TStack& obj);
     TStack(TStack&& obj);
-    TStack(T** datsa_, int len_);
+    TStack(T** data_, int len_);
 	~TStack();
 
 	int GetLen() const;
@@ -32,16 +32,16 @@ public:
     bool IsFull() const;
 
 
-	TStack& operator=(const Tstack& obj);
-	TStack& operator=(TStack&& obj);
-	bool operator ==(const TStack& obj);
-	bool operator!=(const TStack& obj);
+    TStack& operator=(const Tstack& obj);
+    TStack& operator=(TStack&& obj);
+    bool operator ==(const TStack& obj) const;
+    bool operator!=(const TStack& obj) const;
 
 
-	template <class o>
-	friend std::ostream& operator<<(std::ostream& o, TStack<0>& v);
-	template <class I>
-	friend std::istream& operator>>(std::istream& i, TStack<I>& v);
+    template <class o>
+    friend std::ostream& operator<<(std::ostream& o, const TStack<0>& v);
+    template <class I>
+    friend std::istream& operator>>(std::istream& i, TStack<I>& v);
 
   
 };
@@ -56,15 +56,23 @@ inline TStack <T>::TStack(){
 
 template<class T> 
 inline TStack<T>::TStack(int len_){
-    if (len < 0){
+    if (len_ < 0){
         throw - 1;
     }
-    else if (len > 0){
+    if (len_ == 0){
+        data = nullptr;
+        len = 0;
+        top = 0;
+        isNew = true;
+    }
+    else {
         len = len_;
         data = new T * [len];
         for (int i = 0; i < len, i++){
             data[i] = nullptr;
         }
+        top = 0;
+        IsNew = true;
     }
 } 
 
