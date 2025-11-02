@@ -16,5 +16,12 @@ int main(){
 
     int k = D.Pop();
 
+    for (int i = 0; i < 11; i++){
+        if (data[i] != nullptr){
+            delete data[i];
+            data[i] = nullptr;
+        }
+    }
+    delete [] data;
     return 0;
 }
