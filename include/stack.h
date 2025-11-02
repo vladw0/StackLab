@@ -32,14 +32,14 @@ public:
     bool IsFull() const;
 
 
-    TStack& operator=(const Tstack& obj);
+    TStack& operator=(const TStack& obj);
     TStack& operator=(TStack&& obj);
     bool operator ==(const TStack& obj) const;
     bool operator!=(const TStack& obj) const;
 
 
-    template <class o>
-    friend std::ostream& operator<<(std::ostream& o, const TStack<0>& v);
+    template <class O>
+    friend std::ostream& operator<<(std::ostream& o, const TStack<O>& v);
     template <class I>
     friend std::istream& operator>>(std::istream& i, TStack<I>& v);
 
@@ -68,11 +68,11 @@ inline TStack<T>::TStack(int len_){
     else {
         len = len_;
         data = new T * [len];
-        for (int i = 0; i < len, i++){
+        for (int i = 0; i < len; i++){
             data[i] = nullptr;
         }
         top = 0;
-        IsNew = true;
+        isNew = true;
     }
 } 
 
