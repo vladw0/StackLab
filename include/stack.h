@@ -192,7 +192,7 @@ inline void TStack<T>::Resize(int len_) {
 template <class T>
 inline void TStack<T>::SetData(T** data_, int len_) {
     if (isNew && data != nullptr) {
-        for (int i = 0; i < len; ++i) {
+        for (int i = 0; i < len; i++) {
             if (data[i] != nullptr) { 
                 delete data[i]; 
                 data[i] = nullptr; 
@@ -204,7 +204,7 @@ inline void TStack<T>::SetData(T** data_, int len_) {
     len = len_; 
     isNew = false; 
     top = 0;
-    for (int i = 0; i < len; ++i) {
+    for (int i = 0; i < len; i++) {
         if (data[i] == nullptr) { top = i; break; }
         top = i + 1;
     }
@@ -249,4 +249,137 @@ inline bool TStack<T>::IsEmpty() const {
 template <class T>
 inline bool TStack<T>::IsFull() const {
     return top >= len; 
+}
+
+template <class T>
+inline TStack<T>& TStack<T>::operator=(const TStack& obj) {
+    if (this == &obj) {
+        return *this;
+    }
+    if (isNew && data != nullptr) {
+        for (int i = 0; i < len; i++) {
+            if (data[i] != nullptr) { 
+                delete data[i]; 
+                data[i] = nullptr; 
+            }
+        }
+        delete [] data; 
+        data = nullptr;
+    }
+    if (obj.len == 0) { 
+        data = nullptr; 
+        len = 0; 
+        top = 0; 
+        isNew = true;
+        return *this; 
+    }
+    len = obj.len;
+    data = new T*[len];
+    for (int i = 0; i < len; i++) {
+        if (i < obj.top && obj.data[i] != nullptr){ 
+            data[i] = new T(*(obj.data[i]));
+        }
+        else {
+            data[i] = nullptr;
+        }
+    }
+    top = obj.top; 
+    isNew = true;
+    return *this;
+}
+
+template <class T>
+inline TStack<T>& TStack<T>::operator=(TStack&& obj) {
+    if (this == &obj) { 
+        return *this;
+    }
+    if (isNew && data != nullptr) {
+        for (int i = 0; i < len; i++) { 
+            if (data[i] != nullptr) { 
+                delete data[i]; data[i] = nullptr; 
+            } 
+        }
+        delete [] data; 
+        data = nullptr;
+    }
+    data = obj.data; 
+    len = obj.len; 
+    top = obj.top; 
+    isNew = obj.isNew;
+    obj.data = nullptr; 
+    obj.len = 0; 
+    obj.top = 0; 
+    obj.isNew = false;
+    return *this;
+}
+
+template <class T>
+inline bool TStack<T>::operator==(const TStack& obj) const {
+    if (len != obj.len || top != obj.top) {
+        return false;
+    }
+    for (int i = 0; i < len; i++) {
+        bool a = (data != nullptr && data[i] != nullptr);
+        bool b = (obj.data != nullptr && obj.data[i]!= nullptr);
+        if (a != b) {
+            return false;
+        }
+        if (a && b && !(*data[i] == *obj.data[i])) {
+            return false;
+        }
+    }
+    return true;
+}
+
+template <class T>
+inline bool TStack<T>::operator!=(const TStack& obj) const { 
+    return !(*this == obj); 
+}
+
+template <class O>
+inline std::ostream& operator<<(std::ostream& o, const TStack<O>& v) {
+    o << "Top=" << v.top << " Len=" << v.len << " [ ";
+    for (int i = v.top-1; i >= 0; i--) { 
+        if (v.data!= nullptr && v.data[i]!= nullptr) o << *(v.data[i]) << " "; 
+    }
+    o << "]";
+    return o;
+}
+
+template <class I>
+inline std::istream& operator>>(std::istream& i, TStack<I>& v) {
+    int n; 
+    if (!(i >> n)) { 
+        return i;
+    } 
+        if (n < 0) { 
+            i.setstate(std::ios::failbit); 
+            return i;
+        }
+    if (v.isNew && v.data != nullptr) { 
+        for(int k = 0; k < v.len; k++) { 
+            if(v.data[k]!= nullptr) { 
+                delete v.data[k]; 
+                v.data[k] = nullptr;
+            }
+        } 
+        delete [] v.data; 
+        v.data = nullptr;
+    }
+    v.len = n; 
+    v.top = 0; 
+    v.isNew = true;
+    if(n > 0) { 
+        v.data = new I*[n]; 
+        for(int k = 0; k < n; k++){ 
+            v.data[k] = nullptr; 
+        } 
+        for(int k = 0; k<n; k++) { 
+            I tmp; 
+            i>>tmp; 
+            v.data[k] = new I(tmp); 
+            v.top = k+1; 
+        } 
+    }
+    return i;
 }
